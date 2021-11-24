@@ -1,0 +1,46 @@
+#jinja2: trim_blocks: "True", lstrip_blocks: "True"
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis-deployment
+  namespace: {{ NAMESPACE }}
+  labels:
+    app: redis
+spec:
+  replicas: {{ REDIS_REPLICAS|default(1, true) }}
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: redis
+  template:
+    metadata:
+      labels:
+        app: redis
+    spec:
+      securityContext:  
+        #readOnlyRootFilesystem: true
+        #runAsNonRoot: true
+      containers:
+      - name: redis
+        image: {{ REDIS_IMAGE_NAME }}:{{ REDIS_IMAGE_TAG }}
+        imagePullPolicy: IfNotPresent
+        ports:
+        - name: redis
+          containerPort: 6379
+          protocol: TCP
+        volumeMounts:
+        - name: redis-data-pv
+          mountPath: /data
+          readOnly: false
+        resources:
+          limits:
+            cpu: {{ REDIS_CPU_LIMITS|default("2000m", true) }}
+            memory: {{ REDIS_MEMORY_LIMITS|default("128Mi", true) }}
+          requests:
+            cpu: {{ REDIS_CPU_REQUESTS|default("100m", true) }}
+            memory: {{ REDIS_MEMORY_REQUESTS|default("128Mi", true) }}
+      volumes:
+      - name: redis-data-pv
+        persistentVolumeClaim:
+          claimName: redis-pvc

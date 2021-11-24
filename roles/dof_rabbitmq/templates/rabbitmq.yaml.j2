@@ -1,0 +1,34 @@
+apiVersion: rabbitmq.com/v1beta1
+kind: RabbitmqCluster
+metadata:
+  name: rabbitmq-svc
+  namespace: {{ NAMESPACE }}
+spec:
+  replicas: {{ RABBITMQ_REPLICAS|default("1", true) }}
+  resources:
+    limits:
+      cpu: {{ RABBITMQ_CPU_LIMITS|default("500m", true) }}
+      memory: {{ RABBITMQ_MEMORY_LIMITS|default("1Gi", true) }}
+    requests:
+      cpu: {{ RABBITMQ_CPU_REQUESTS|default("100m", true) }}
+      memory: {{ RABBITMQ_MEMORY_REQUESTS|default("256Mi", true) }}
+  persistence:
+    storage: "{{ RABBITMQ_PERSISTENCE_STORAGE|default("1Gi", true) }}"
+  override:
+    statefulSet:
+      spec:
+        template:
+          spec:
+            containers:
+            - name: rabbitmq
+              volumeMounts:
+              - mountPath: /path/to/exported/
+                name: rabbitmq-secret
+            volumes:
+            - name: rabbitmq-secret
+              secret:
+                secretName: rabbitmq-secret
+  rabbitmq:
+    additionalConfig: |
+      load_definitions = /path/to/exported/definitions.json
+      disk_free_limit.absolute = "{{ RABBITMQ_LOW_WATERMARK_DISK|default("50MB", true) }}"

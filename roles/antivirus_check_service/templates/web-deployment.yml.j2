@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: antivirus-webserver-deployment
+  namespace: {{ NAMESPACE }}
+  labels:
+    app: antivirus
+    antivirus: webserver
+spec:
+  replicas: {{ ANTIVIRUS_WEBSERVER_REPLICAS|default("1", true) }}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      #maxUnavailable: 1
+  revisionHistoryLimit: 4
+  paused: false
+  selector:
+    matchLabels:
+      app: antivirus
+      antivirus: webserver
+  template:
+    metadata:
+      labels:
+        app: antivirus
+        antivirus: webserver
+      annotations:
+    spec:
+      securityContext:  
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        runAsNonRoot: true
+      containers:
+      - name: antivirus-webserver
+        image: {{ ANTIVIRUS_IMAGE_NAME }}:{{ APP_IMAGE_TAG }}
+        imagePullPolicy: IfNotPresent
+        args: ["webserver"]
+        ports:
+        - name: antivirus-web
+          containerPort: {{ ANTIVIRUS_PORT }}
+          protocol: TCP
+        envFrom:
+        - secretRef:
+            name: antivirus-secret
+        resources:
+          limits:
+            cpu: {{ ANTIVIRUS_WEBSERVER_CPU_LIMITS|default("1000m", true) }}
+            memory: {{ ANTIVIRUS_WEBSERVER_MEMORY_LIMITS|default("1Gi", true) }}
+          requests:
+            cpu: {{ ANTIVIRUS_WEBSERVER_CPU_REQUESTS|default("100m", true) }}
+            memory: {{ ANTIVIRUS_WEBSERVER_MEMORY_REQUESTS|default("128Mi", true) }}

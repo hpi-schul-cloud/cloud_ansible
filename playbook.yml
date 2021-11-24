@@ -1,0 +1,29 @@
+---
+- name: App Deploy
+  hosts: 
+    - sc
+  connection: local
+  roles:
+    - sys
+    - dof_mongo
+    - dof_postgresql
+    - dof_rabbitmq
+    - dof_redis
+    - dof_mailcatcher
+    - libreoffice
+    - maildrop
+    - storage
+    - hydra
+    - dof_etherpad_nginx
+    - dof_etherpad
+    - schulcloud-server
+    - schulcloud-management
+    - schulcloud-client
+    - nuxt-client
+    - superhero-dashboard
+    - schulcloud-calendar
+    - edtrio
+    - schulcloud-editor
+    - antivirus_check_service
+    - rocketchat
+    - ingress

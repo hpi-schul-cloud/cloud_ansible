@@ -1,0 +1,41 @@
+#jinja2: trim_blocks: "True", lstrip_blocks: "True"
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mailcatcher-deployment
+  namespace: {{ NAMESPACE }}
+  labels:
+    app: mailcatcher
+spec:
+  replicas: {{ MAILCATCHER_REPLICAS|default(1, true) }}
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: mailcatcher
+  template:
+    metadata:
+      labels:
+        app: mailcatcher
+    spec:
+      securityContext:  
+        #readOnlyRootFilesystem: true
+        #runAsNonRoot: true
+      containers:
+      - name: mailcatcher
+        image: {{ MAILCATCHER_IMAGE_NAME }}:{{ MAILCATCHER_IMAGE_TAG }}
+        imagePullPolicy: IfNotPresent
+        ports:
+        - name: smtp-mail
+          containerPort: 1025
+          protocol: TCP
+        - name: http-mail
+          containerPort: 1080
+          protocol: TCP
+        resources:
+          limits:
+            cpu: {{ MAILCATCHER_CPU_LIMITS|default("1000m", true) }}
+            memory: {{ MAILCATCHER_MEMORY_LIMITS|default("256Mi", true) }}
+          requests:
+            cpu: {{ MAILCATCHER_CPU_REQUESTS|default("100m", true) }}
+            memory: {{ MAILCATCHER_MEMORY_REQUESTS|default("256Mi", true) }}
