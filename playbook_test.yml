@@ -1,0 +1,7 @@
+---
+- name: App Deploy
+  hosts: 
+    - sc
+  connection: local
+  roles:
+    - sys
