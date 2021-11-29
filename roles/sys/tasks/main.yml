@@ -5,6 +5,9 @@
   - name: bash 3
     shell: ls -la ~/
   ## helpers, small scripts for maintenance
+  - name: pip add openshift
+    pip:
+      name: openshift
   - name: create dir .kube
     file:
       path: "{{ ansible_env.HOME }}/.kube/"
