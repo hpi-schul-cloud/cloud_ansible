@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: edtrio
-        image: {{ EDTRIO_IMAGE_NAME }}:{{ APP_IMAGE_TAG }}
+        image: {{ EDTRIO_IMAGE_NAME }}:{{ EDTRIO_IMAGE_TAG }}
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 3000

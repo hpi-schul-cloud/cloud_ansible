@@ -1,7 +1,7 @@
 ---
 - name: App Deploy
   hosts: 
-    - sc
+    - develop
   connection: local
   roles:
     - sys
@@ -16,14 +16,16 @@
     - hydra
     - dof_etherpad_nginx
     - dof_etherpad
-    - schulcloud-server
-    - schulcloud-management
-    - schulcloud-client
-    - nuxt-client
+    - schulcloud-server-core
+    - schulcloud-server-init
+    - schulcloud-server-ldapsync
+    #- schulcloud-server-tspsync
+    - schulcloud-client-core
+    - nuxt-client-core
     - superhero-dashboard
-    - schulcloud-calendar
+    - schulcloud-calendar-core
+    - schulcloud-calendar-init
     - edtrio
-    - schulcloud-editor
     - antivirus_check_service
     - rocketchat
     - ingress

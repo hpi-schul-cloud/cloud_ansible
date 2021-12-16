@@ -25,7 +25,7 @@ spec:
     spec:
       containers:
       - name: editor
-        image: {{ EDITOR_IMAGE_NAME }}:{{ APP_IMAGE_TAG }}
+        image: {{ EDITOR_IMAGE_NAME }}:{{ EDITOR_IMAGE_TAG }}
         imagePullPolicy: IfNotPresent
         ports:
         - name: editor
