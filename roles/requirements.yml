@@ -1,3 +1,3 @@
 roles:
   - src: https://github.com/hpi-schul-cloud/cloud_ansible
-    version: main
+    version: feature/1178-prepare-board-entities
